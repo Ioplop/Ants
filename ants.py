@@ -7,6 +7,7 @@ from utils import Position
 class Cell:
     """
     Holds ants, food and signals
+    This is meant to be handled from World
     """
     def __init__(self, pos: Position):
         # Position of this cell
@@ -37,7 +38,7 @@ class Cell:
             self.food = 0.0
             return amount
     
-    def check_signal(self, key: str) -> float:
+    def get_signal(self, key: str) -> float:
         """
         Returns the intensity of a specific signal in this cell.
 
@@ -69,6 +70,26 @@ class World:
     A class that holds and works with a grid of Cells.
     Cells are responsible for holding everything in the world: Ants, Food, Signals, Etc.
     """
+    def __init__(self, W: int, H: int):
+        self.grid = [[Cell(Position(x, y)) for y in range(H)] for x in range(W)]
+        self.ants = []
+        
+    def get_cell(self, pos: Position) -> Cell:
+        return self.grid[pos%Position(self.W, self.H)]
+    
+    def get_signal(self, pos : Position, id: str) -> float:
+        return self.get_cell(pos).get_signal(id)
+    
+    def signal_gradient(self, pos: Position, dist: int, id: str) -> Position:
+        grad = Position(0, 0)
+        for x in range(-dist, dist + 1, 1):
+            for y in range(-dist, dist + 1, 1):
+                offset = Position(x, y)
+                signal = self.get_signal(pos + offset, id)
+                grad += offset * signal
+        return grad
+        
+        
     
     
 class Ant:

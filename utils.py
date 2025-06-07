@@ -50,6 +50,11 @@ class Position:
         elif isinstance(other, float):
             return Position(round(self.x * other), round(self.y * other))
         raise TypeError(f"Cannot multiply Position with {type(other)}")
+
+    def __truediv__(self, other: int) -> Position:
+        if isinstance(other, int) or isinstance(other, float):
+            return Position(self.x / other, self.y/other)
+        return TypeError(f"Cannot divide Position by {type(other)}")
     
     def __rmul__(self, other: int) -> Position:
         return self * other
